@@ -14,7 +14,7 @@ export class Satellite {
 			this.launchDate = launchDate;
 	}
 
-	shouldShowWarning(): boolean {
+	isSpaceDebris(): boolean {
 		let warning: boolean;
 		if (this.type.toLowerCase() === 'space debris') {
 				warning = true;
