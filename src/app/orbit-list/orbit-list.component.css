@@ -4,20 +4,16 @@
 }
 
 .warning {
-  background-color: #e47b52;
-}
-
-.stripe {
-  background-color: greenyellow;
+  background-color: #ff4444;
 }
 
 table {
-  color: #111;
+  color: black;
   border-radius: 5px;
   overflow: hidden;
   margin: 12px 0;
   min-width: 300px;
-  background: #fbcfff;
+  background: #dad8d8;
 }
 
 .header-row {
@@ -30,4 +26,8 @@ td {
   text-align: left;
   margin: 5px 10px;
   padding: 6px;
+}
+
+.zebra {
+  background-color: #7da7a1;
 }
