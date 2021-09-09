@@ -1,42 +1,46 @@
-import { DebugElement } from '@angular/core';
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { OrbitCountsComponent } from './orbit-counts/orbit-counts.component';
-import { OrbitListComponent } from './orbit-list/orbit-list.component';
+import { Component } from '@angular/core';
+import { Satellite } from './satellite';
 
-describe('AppComponent', () => {
-  let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
-  let element: DebugElement;
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'orbit-report';
+  sourceList: Satellite[];
+  displayList: Satellite[];
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-		  OrbitListComponent,
-		  OrbitCountsComponent
-      ],
-    }).compileComponents();
-  }));
+  constructor() {
+    this.sourceList = [];
+    this.displayList = [];
+    let satellitesUrl = 'https://handlers.education.launchcode.org/static/satellites.json';
 
-  beforeEach(() => {
-	fixture = TestBed.createComponent(AppComponent);
-	component = fixture.debugElement.componentInstance;
-	element = fixture.debugElement;
+    window.fetch(satellitesUrl).then(function (response) {
+      response.json().then(function (data) {
+        let fetchedSatellites = data.satellites;
+        for (let i = 0; i < fetchedSatellites.length; i++) {
+          this.sourceList.push(new Satellite(fetchedSatellites[i].name, fetchedSatellites[i].type, fetchedSatellites[i].launchDate, fetchedSatellites[i].orbitType, fetchedSatellites[i].operational));
+        }
+        this.displayList = this.sourceList.slice(0);
+      }.bind(this));
+    }.bind(this));
 
-	fixture.detectChanges();
- });
+  }
 
- it('should create', () => {
-	expect(component).toBeTruthy();
- });
-
- it('should contain the list component', async(() => {
-	const fixture = TestBed.createComponent(AppComponent);
-	fixture.detectChanges();
-	const compiled = fixture.debugElement.nativeElement;
-	expect(compiled.querySelector('app-orbit-list')).not.toBe(null);
- }));
-
-
-});
+  search(searchTerm: string): void {
+    let matchingSatellites: Satellite[] = [];
+    searchTerm = searchTerm.toLowerCase();
+    for (let i = 0; i < this.sourceList.length; i++) {
+      let name = this.sourceList[i].name.toLowerCase();
+      let orbitType = this.sourceList[i].orbitType.toLowerCase();
+      let type = this.sourceList[i].type.toLowerCase();
+      if (name.indexOf(searchTerm) >= 0 || orbitType.indexOf(searchTerm) >= 0 || type.indexOf(searchTerm) >= 0) {
+        matchingSatellites.push(this.sourceList[i]);
+      }
+    }
+    // assign this.displayList to be the the array of matching satellites
+    // this will cause Angular to re-make the table, but now only containing matches
+    this.displayList = matchingSatellites;
+  }
+}
