@@ -28,6 +28,6 @@ td {
   padding: 6px;
 }
 
-.zebra {
-  background-color: #7da7a1;
+tr:nth-child(even) {
+  background-color: #61da99;
 }
